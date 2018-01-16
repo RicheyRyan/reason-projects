@@ -6,17 +6,8 @@ var List        = require("bs-platform/lib/js/list.js");
 var $$Array     = require("bs-platform/lib/js/array.js");
 var $$Error     = require("./Error.js");
 var Js_exn      = require("bs-platform/lib/js/js_exn.js");
-var Process     = require("process");
 var Caml_array  = require("bs-platform/lib/js/caml_array.js");
 var Caml_format = require("bs-platform/lib/js/caml_format.js");
-
-var payDayDateKey = "PAYDAY_DATE";
-
-var match = Process.env["HOME"];
-
-var home = match !== undefined ? match : "";
-
-var configPath = "" + (String(home) + "/.paydayrc");
 
 function validContent(line) {
   return +(line.indexOf("=") > -1);
@@ -66,21 +57,13 @@ function formatFileContent(fileContent) {
   return List.fold_left(parseLine, /* [] */0, $$Array.to_list(fileContent.split("\n")));
 }
 
-function isPayDayDate(keyValue) {
-  return +(keyValue[/* key */0] === payDayDateKey);
+function paydayFile(configPath) {
+  return formatFileContent(readFile(configPath));
 }
 
-function paydayValue() {
-  return List.find(isPayDayDate, formatFileContent(readFile(configPath)));
-}
-
-exports.payDayDateKey     = payDayDateKey;
-exports.home              = home;
-exports.configPath        = configPath;
 exports.validContent      = validContent;
 exports.readFile          = readFile;
 exports.parseLine         = parseLine;
 exports.formatFileContent = formatFileContent;
-exports.isPayDayDate      = isPayDayDate;
-exports.paydayValue       = paydayValue;
-/* match Not a pure module */
+exports.paydayFile        = paydayFile;
+/* fs Not a pure module */

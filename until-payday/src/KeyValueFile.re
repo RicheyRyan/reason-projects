@@ -5,16 +5,6 @@ type keyvalue = {
   value: float
 };
 
-let payDayDateKey = "PAYDAY_DATE";
-
-let home =
-  switch (Js.Dict.get(Node.Process.process##env, "HOME")) {
-  | Some(path) => path
-  | None => ""
-  };
-
-let configPath = {j|$home/.paydayrc|j};
-
 let validContent = (line: Js.String.t) => Js.String.indexOf("=", line) > (-1);
 
 let readFile = (path: string) =>
@@ -43,7 +33,5 @@ let formatFileContent = (fileContent: Js.String.t) =>
   |> Array.to_list
   |> List.fold_left(parseLine, []);
 
-let isPayDayDate = (keyValue: keyvalue) => keyValue.key == payDayDateKey;
-
-let paydayValue = () =>
-  readFile(configPath) |> formatFileContent |> List.find(isPayDayDate);
+let paydayFile = (configPath: string) =>
+  readFile(configPath) |> formatFileContent;

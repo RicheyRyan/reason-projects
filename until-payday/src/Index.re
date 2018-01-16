@@ -1,9 +1,22 @@
+let payDayDateKey = "PAYDAY_DATE";
+
+let home =
+  switch (Js.Dict.get(Node.Process.process##env, "HOME")) {
+  | Some(path) => path
+  | None => ""
+  };
+
+let configPath = {j|$home/.paydayrc|j};
+
+let isPayDayDate = (keyValue: KeyValueFile.keyvalue) =>
+  keyValue.key == payDayDateKey;
+
 let today = Js.Date.make();
 
 let currentYear = Js.Date.getUTCFullYear(today);
 
 let daysUntilPayday =
-    ({value: payday}: KeyValueFile.keyvalue, today: Js.Date.t) => {
+    (today: Js.Date.t, {value: payday}: KeyValueFile.keyvalue) => {
   let numToday = DateUtil.numDayOfDate(today);
   let numDays = payday -. numToday;
   let days =
@@ -19,6 +32,9 @@ let daysUntilPayday =
   {j|There are $outputDays days until payday|j};
 };
 
-let outputString = daysUntilPayday(KeyValueFile.paydayValue(), today);
+let outputString =
+  KeyValueFile.paydayFile(configPath)
+  |> List.find(isPayDayDate)
+  |> daysUntilPayday(today);
 
 Js.log(outputString);
