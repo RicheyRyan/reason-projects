@@ -2,9 +2,13 @@
 'use strict';
 
 
-var genericError = /* record */[/* message */"An issue occured"];
+var genericError = /* record */[/* message */"Error: An issue occured"];
 
 var notFoundError = /* record */[/* message */"We could not find your .paydayrc file!"];
+
+function isError(str) {
+  return +(str.indexOf("Error:") > -1);
+}
 
 function fileNotFound(message) {
   return +(message.indexOf("no such file or directory") > -1);
@@ -21,6 +25,7 @@ function checkErrorMessage(message) {
 
 exports.genericError      = genericError;
 exports.notFoundError     = notFoundError;
+exports.isError           = isError;
 exports.fileNotFound      = fileNotFound;
 exports.checkErrorMessage = checkErrorMessage;
 /* No side effect */

@@ -2,6 +2,8 @@
 'use strict';
 
 var List         = require("bs-platform/lib/js/list.js");
+var $$Error      = require("./Error.js");
+var Js_exn       = require("bs-platform/lib/js/js_exn.js");
 var Process      = require("process");
 var DateUtil     = require("./DateUtil.js");
 var KeyValueFile = require("./KeyValueFile.js");
@@ -26,21 +28,39 @@ function daysUntilPayday(today, param) {
   var payday = param[/* value */1];
   var numToday = DateUtil.numDayOfDate(today);
   var numDays = payday - numToday;
-  var days = numDays > 0.0 ? numDays : payday + DateUtil.daysLeftInMonth(numToday, DateUtil.daysInMonth(currentYear, DateUtil.monthOfDate(today)));
-  var outputDays = days | 0;
-  return "There are " + (String(outputDays) + " days until payday");
+  return (
+          numDays > 0.0 ? numDays : payday + DateUtil.daysLeftInMonth(numToday, DateUtil.daysInMonth(currentYear, DateUtil.monthOfDate(today)))
+        ) | 0;
 }
 
-var outputString = daysUntilPayday(today, List.find(isPayDayDate, KeyValueFile.paydayFile(configPath)));
+function makeOutputString(days) {
+  return "There are " + (String(days) + " days until payday");
+}
+
+var outputString;
+
+try {
+  outputString = makeOutputString(daysUntilPayday(today, List.find(isPayDayDate, KeyValueFile.paydayFile(configPath))));
+}
+catch (raw_exn){
+  var exn = Js_exn.internalToOCamlException(raw_exn);
+  if (exn[0] === Js_exn.$$Error) {
+    var match$1 = exn[1].message;
+    outputString = match$1 !== undefined ? $$Error.checkErrorMessage(match$1)[/* message */0] : $$Error.genericError[/* message */0];
+  } else {
+    throw exn;
+  }
+}
 
 console.log(outputString);
 
-exports.payDayDateKey   = payDayDateKey;
-exports.home            = home;
-exports.configPath      = configPath;
-exports.isPayDayDate    = isPayDayDate;
-exports.today           = today;
-exports.currentYear     = currentYear;
-exports.daysUntilPayday = daysUntilPayday;
-exports.outputString    = outputString;
+exports.payDayDateKey    = payDayDateKey;
+exports.home             = home;
+exports.configPath       = configPath;
+exports.isPayDayDate     = isPayDayDate;
+exports.today            = today;
+exports.currentYear      = currentYear;
+exports.daysUntilPayday  = daysUntilPayday;
+exports.makeOutputString = makeOutputString;
+exports.outputString     = outputString;
 /* match Not a pure module */

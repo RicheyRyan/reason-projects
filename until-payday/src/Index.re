@@ -28,13 +28,23 @@ let daysUntilPayday =
       |> DateUtil.daysLeftInMonth(numToday)
       |> (+.)(payday);
     };
-  let outputDays = int_of_float(days);
-  {j|There are $outputDays days until payday|j};
+  int_of_float(days);
 };
 
+let makeOutputString = (days: int) => {j|There are $days days until payday|j};
+
 let outputString =
-  KeyValueFile.paydayFile(configPath)
-  |> List.find(isPayDayDate)
-  |> daysUntilPayday(today);
+  try (
+    KeyValueFile.paydayFile(configPath)
+    |> List.find(isPayDayDate)
+    |> daysUntilPayday(today)
+    |> makeOutputString
+  ) {
+  | Js.Exn.Error(e) =>
+    switch (Js.Exn.message(e)) {
+    | Some(message) => Error.checkErrorMessage(message).message
+    | None => Error.genericError.message
+    }
+  };
 
 Js.log(outputString);

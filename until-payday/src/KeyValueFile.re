@@ -1,20 +1,9 @@
-open Error;
-
 type keyvalue = {
   key: string,
   value: float
 };
 
 let validContent = (line: Js.String.t) => Js.String.indexOf("=", line) > (-1);
-
-let readFile = (path: string) =>
-  try (Node.Fs.readFileAsUtf8Sync(path)) {
-  | Js.Exn.Error(e) =>
-    switch (Js.Exn.message(e)) {
-    | Some(message) => checkErrorMessage(message).message
-    | None => genericError.message
-    }
-  };
 
 let parseLine = (acc: list(keyvalue), line: Js.String.t) => {
   let parsedLine = Js.String.split("=", line);
@@ -34,4 +23,4 @@ let formatFileContent = (fileContent: Js.String.t) =>
   |> List.fold_left(parseLine, []);
 
 let paydayFile = (configPath: string) =>
-  readFile(configPath) |> formatFileContent;
+  Node.Fs.readFileAsUtf8Sync(configPath) |> formatFileContent;
