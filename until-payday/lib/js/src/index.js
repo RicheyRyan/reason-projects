@@ -8,25 +8,21 @@ var today = new Date();
 
 var currentYear = today.getUTCFullYear();
 
-function daysUntilPayday(payday, today) {
+function daysUntilPayday(param, today) {
+  var payday = param[/* value */1];
   var numToday = DateUtil.numDayOfDate(today);
   var numDays = payday - numToday;
-  var days = numDays > 0.0 ? numDays : DateUtil.daysLeftInMonth(numToday, DateUtil.daysInMonth(currentYear, DateUtil.monthOfDate(today))) + payday;
+  var days = numDays > 0.0 ? numDays : payday + DateUtil.daysLeftInMonth(numToday, DateUtil.daysInMonth(currentYear, DateUtil.monthOfDate(today)));
   var outputDays = days | 0;
   return "There are " + (String(outputDays) + " days until payday");
 }
 
-var result = KeyValueFile.paydayFromFile(/* () */0);
-
-var match = KeyValueFile.desiredContent(result);
-
-var outputString = match !== 0 ? daysUntilPayday(KeyValueFile.paydayValue(result), today) : result;
+var outputString = daysUntilPayday(KeyValueFile.paydayValue(/* () */0), today);
 
 console.log(outputString);
 
 exports.today           = today;
 exports.currentYear     = currentYear;
 exports.daysUntilPayday = daysUntilPayday;
-exports.result          = result;
 exports.outputString    = outputString;
 /* today Not a pure module */

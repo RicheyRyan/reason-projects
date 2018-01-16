@@ -1,5 +1,12 @@
 open Error;
 
+type keyvalue = {
+  key: string,
+  value: float
+};
+
+let payDayDateKey = "PAYDAY_DATE";
+
 let home =
   switch (Js.Dict.get(Node.Process.process##env, "HOME")) {
   | Some(path) => path
@@ -8,17 +15,35 @@ let home =
 
 let configPath = {j|$home/.paydayrc|j};
 
-let desiredContent = message =>
-  Js.String.indexOf("PAYDAY_DATE", message) > (-1);
+let validContent = (line: Js.String.t) => Js.String.indexOf("=", line) > (-1);
 
-let paydayValue = paydayFile =>
-  float_of_string(Js.String.split("=", paydayFile)[1]);
-
-let paydayFromFile = () =>
-  try (Node.Fs.readFileAsUtf8Sync(configPath)) {
+let readFile = (path: string) =>
+  try (Node.Fs.readFileAsUtf8Sync(path)) {
   | Js.Exn.Error(e) =>
     switch (Js.Exn.message(e)) {
     | Some(message) => checkErrorMessage(message).message
     | None => genericError.message
     }
   };
+
+let parseLine = (acc: list(keyvalue), line: Js.String.t) => {
+  let parsedLine = Js.String.split("=", line);
+  if (Array.length(parsedLine) == 2) {
+    List.concat([
+      acc,
+      [{key: parsedLine[0], value: parsedLine[1] |> float_of_string}]
+    ]);
+  } else {
+    acc;
+  };
+};
+
+let formatFileContent = (fileContent: Js.String.t) =>
+  Js.String.split("\n", fileContent)
+  |> Array.to_list
+  |> List.fold_left(parseLine, []);
+
+let isPayDayDate = (keyValue: keyvalue) => keyValue.key == payDayDateKey;
+
+let paydayValue = () =>
+  readFile(configPath) |> formatFileContent |> List.find(isPayDayDate);

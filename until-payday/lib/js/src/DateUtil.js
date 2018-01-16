@@ -6,8 +6,8 @@ function numDayOfDate(date) {
   return date.getUTCDate();
 }
 
-function monthOfDate(d) {
-  return d.getUTCMonth() + 1.0;
+function monthOfDate(date) {
+  return date.getUTCMonth() + 1.0;
 }
 
 function daysInMonth(year, month) {
