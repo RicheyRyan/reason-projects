@@ -2,58 +2,74 @@
 'use strict';
 
 
-var metre = /* float array */[
-  1.0,
-  0.001,
-  0.000621371,
+var mm = /* float array */[
+  1,
+  1000,
+  0.0393701,
   100.0,
-  39.3701
-];
-
-var km = /* float array */[
-  0.0001,
-  1.0,
-  0.62137,
-  100000.0,
-  39370.1
-];
-
-var mile = /* float array */[
-  1609.04,
-  1.60904,
-  1.0,
-  160904.0,
-  63360
+  100000,
+  160934
 ];
 
 var cm = /* float array */[
+  1000,
+  1,
+  0.393701,
   100.0,
   100000,
-  160934,
-  1,
-  0.393701
+  160934
 ];
 
 var inch = /* float array */[
+  254,
+  2.54,
+  1,
   0.0254,
   0.0000254,
-  0.000015783,
-  2.54,
-  1
+  0.000015783
+];
+
+var metre = /* float array */[
+  1000.0,
+  100.0,
+  39.3701,
+  1.0,
+  0.001,
+  0.000621371
+];
+
+var km = /* float array */[
+  100000.0,
+  100000.0,
+  39370.1,
+  0.0001,
+  1.0,
+  0.62137
+];
+
+var mile = /* float array */[
+  1609040,
+  160904.0,
+  63360,
+  1609.04,
+  1.60904,
+  1.0
 ];
 
 function convertTarget(conversion, target, unit) {
   switch (target) {
     case 0 : 
-        return unit * conversion[/* metre */0];
+        return unit * conversion[/* mm */0];
     case 1 : 
-        return unit * conversion[/* km */1];
+        return unit * conversion[/* cm */1];
     case 2 : 
-        return unit * conversion[/* mile */2];
+        return unit * conversion[/* inch */2];
     case 3 : 
-        return unit * conversion[/* cm */3];
+        return unit * conversion[/* metre */3];
     case 4 : 
-        return unit * conversion[/* inch */4];
+        return unit * conversion[/* km */4];
+    case 5 : 
+        return unit * conversion[/* mile */5];
     
   }
 }
@@ -62,19 +78,22 @@ function convert(base, target, unit) {
   var tmp;
   switch (base) {
     case 0 : 
-        tmp = metre;
+        tmp = mm;
         break;
     case 1 : 
-        tmp = km;
-        break;
-    case 2 : 
-        tmp = mile;
-        break;
-    case 3 : 
         tmp = cm;
         break;
-    case 4 : 
+    case 2 : 
         tmp = inch;
+        break;
+    case 3 : 
+        tmp = metre;
+        break;
+    case 4 : 
+        tmp = km;
+        break;
+    case 5 : 
+        tmp = mile;
         break;
     
   }
@@ -82,11 +101,12 @@ function convert(base, target, unit) {
 }
 
 var Distance = /* module */[
+  /* mm */mm,
+  /* cm */cm,
+  /* inch */inch,
   /* metre */metre,
   /* km */km,
   /* mile */mile,
-  /* cm */cm,
-  /* inch */inch,
   /* convertTarget */convertTarget,
   /* convert */convert
 ];

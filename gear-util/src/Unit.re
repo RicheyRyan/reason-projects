@@ -1,58 +1,83 @@
 module Distance = {
   type measure =
+    | Mm
+    | Cm
+    | Inch
     | Metre
     | Km
-    | Mile
-    | Cm
-    | Inch;
+    | Mile;
   type ratio = {
+    mm: float,
+    cm: float,
+    inch: float,
     metre: float,
     km: float,
-    mile: float,
-    cm: float,
-    inch: float
+    mile: float
   };
   /* TODO: double check all these ratios */
-  let metre = {
-    metre: 1.0,
-    km: 0.001,
-    mile: 0.000621371,
-    cm: 100.0,
-    inch: 39.3701
+  let mm = {
+    mm: 1.,
+    cm: 1000.,
+    inch: 0.0393701,
+    metre: 100.0,
+    km: 100000.,
+    mile: 160934.
   };
-  let km = {
-    metre: 0.0001,
-    km: 1.0,
-    mile: 0.62137,
-    cm: 100000.0,
-    inch: 39370.1
+  let cm = {
+    mm: 1000.,
+    cm: 1.,
+    inch: 0.393701,
+    metre: 100.0,
+    km: 100000.,
+    mile: 160934.
   };
-  let mile = {
-    metre: 1609.04,
-    km: 1.60904,
-    mile: 1.0,
-    cm: 160904.0,
-    inch: 63360.
-  };
-  let cm = {metre: 100.0, km: 100000., mile: 160934., cm: 1., inch: 0.393701};
   let inch = {
+    mm: 254.,
+    cm: 2.54,
+    inch: 1.,
     metre: 0.0254,
     km: 0.0000254,
-    mile: 0.000015783,
-    cm: 2.54,
-    inch: 1.
+    mile: 0.000015783
+  };
+  let metre = {
+    mm: 1000.0,
+    cm: 100.0,
+    inch: 39.3701,
+    metre: 1.0,
+    km: 0.001,
+    mile: 0.000621371
+  };
+  let km = {
+    mm: 100000.0,
+    cm: 100000.0,
+    inch: 39370.1,
+    metre: 0.0001,
+    km: 1.0,
+    mile: 0.62137
+  };
+  let mile = {
+    mm: 1609040.,
+    cm: 160904.0,
+    inch: 63360.,
+    metre: 1609.04,
+    km: 1.60904,
+    mile: 1.0
   };
   let convertTarget = (conversion: ratio, target: measure, unit: float) =>
     switch target {
+    | Mm => unit *. conversion.mm
+    | Cm => unit *. conversion.cm
+    | Inch => unit *. conversion.inch
     | Metre => unit *. conversion.metre
     | Km => unit *. conversion.km
     | Mile => unit *. conversion.mile
-    | Cm => unit *. conversion.cm
-    | Inch => unit *. conversion.inch
     };
   let convert = (base: measure, target: measure, unit: float) =>
     (
       switch base {
+      | Mm => mm
+      | Cm => cm
+      | Inch => inch
       | Metre => metre
       | Km => km
       | Mile => mile
