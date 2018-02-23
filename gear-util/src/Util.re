@@ -5,8 +5,6 @@ type fraction = {
 
 let isEvenFloat = x => mod_float(x, 2.0) == 0.0;
 
-let isEven = x => x mod 2 == 0;
-
 let metreToKm = Unit.Distance.convert(Unit.Distance.Metre, Unit.Distance.Km);
 
 let metreToMile =
@@ -53,7 +51,6 @@ let equivalentGear = (chainring: float, cog: float, range: array(int)) =>
       )
   );
 
-/* Find every even multiple of the numerator within a certain range */
 let gearInches = (wheelDiameter: float, chainring: float, cog: float) =>
   wheelDiameter *. (chainring /. cog);
 

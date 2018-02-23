@@ -9,10 +9,6 @@ function isEvenFloat(x) {
   return +(x % 2.0 === 0.0);
 }
 
-function isEven(x) {
-  return +(x % 2 === 0);
-}
-
 var partial_arg = Unit$GearUtil.Distance[/* convert */7];
 
 function metreToKm(param) {
@@ -146,7 +142,6 @@ function gainRatio(wheelDiameter, crank, chainring, cog) {
 }
 
 exports.isEvenFloat = isEvenFloat;
-exports.isEven = isEven;
 exports.metreToKm = metreToKm;
 exports.metreToMile = metreToMile;
 exports.inchToMetre = inchToMetre;
